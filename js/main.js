@@ -4,9 +4,9 @@ THREE.Cache.enabled = true;
 
 var scene, camera, renderer;
 var geometry, materialBox, materialKnot, meshBox, meshKnot;
-var effect, controls;
+var effect, controls, stats;
 var element, container;
-
+var groundMaterial, planeGeometry, ground;
 
 var clock = new THREE.Clock();
 
@@ -28,14 +28,18 @@ function init() {
     // GEOMETRY
     geometryBox = new THREE.BoxGeometry(200, 200, 200);
     geometryKnot = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+    planeGeometry = new THREE.PlaneBufferGeometry(16000, 16000);
 
-    //loadtexture();
     initTexture();
 
     // MESH
     meshBox = new THREE.Mesh(geometryBox, materialBox);
     meshKnot = new THREE.Mesh(geometryKnot, materialKnot);
+    meshGround = new THREE.Mesh(planeGeometry, groundMaterial);
+    meshGround.position.set(0, -200, 0);
+    meshGround.rotation.x = -Math.PI / 2;
 
+    scene.add(meshGround);
     scene.add(meshBox);
     scene.add(meshKnot);
 
@@ -47,6 +51,11 @@ function init() {
 
     container = document.getElementById('test');
     container.appendChild(element);
+
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    container.appendChild(stats.domElement);
 
     window.addEventListener('resize', resize, false);
     setTimeout(resize, 1);

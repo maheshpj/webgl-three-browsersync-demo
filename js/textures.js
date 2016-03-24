@@ -27,40 +27,50 @@ function initTexture() {
         map: texture,
         wireframe: true
     });
+
+    groundMaterial = new THREE.MeshPhongMaterial({
+        color: 0x0d0840,
+        specular: 0xffffff,
+        shininess: 10,
+        shading: THREE.FlatShading,
+        emissive: 0xbbbbbb
+    });
 }
 
-function loadtexture() {
+function initTexture2() {
     // instantiate a loader
     var loader = new THREE.TextureLoader();
 
     // load a resource
     loader.load(
         // resource URL
-        'textures/patterns/checker.png',
-        // Function when resource is loaded
-        function(texture) {
-            // do something with the texture
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat = new THREE.Vector2(1, 1);
-            texture.anisotropy = renderer.getMaxAnisotropy();
+        'textures/colorful-checks.jpg',
+        function() {
+            loadTexture();
+        });
+}
 
-            material = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
-                specular: 0xffffff,
-                shininess: 20,
-                shading: THREE.FlatShading,
-                map: texture,
-                wireframe: false
-            });
-        },
-        // Function called when download progresses
-        function(xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        // Function called when download errors
-        function(xhr) {
-            console.log('An error happened');
-        }
-    );
+function loadTexture() {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat = new THREE.Vector2(1, 1);
+    texture.anisotropy = renderer.getMaxAnisotropy();
+
+    materialBox = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        specular: 0xffffff,
+        shininess: 20,
+        shading: THREE.FlatShading,
+        map: texture,
+        wireframe: false
+    });
+
+    materialKnot = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        specular: 0xffffff,
+        shininess: 20,
+        shading: THREE.FlatShading,
+        map: texture,
+        wireframe: true
+    });
 }
