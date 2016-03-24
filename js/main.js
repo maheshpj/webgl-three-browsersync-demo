@@ -1,7 +1,12 @@
+if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+THREE.Cache.enabled = true;
+
 var scene, camera, renderer;
-var geometry, material, mesh;
+var geometry, materialBox, materialKnot, meshBox, meshKnot;
 var effect, controls;
 var element, container;
+
 
 var clock = new THREE.Clock();
 
@@ -11,28 +16,34 @@ animate();
 function init() {
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x000000, 250, 1400);
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // CAMRERA
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
     camera.position.z = 500;
 
-    geometry = new THREE.BoxGeometry(200, 200, 200);
+    // GEOMETRY
+    geometryBox = new THREE.BoxGeometry(200, 200, 200);
+    geometryKnot = new THREE.TorusKnotGeometry(10, 3, 100, 16);
 
     //loadtexture();
     initTexture();
 
-    mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
+    // MESH
+    meshBox = new THREE.Mesh(geometryBox, materialBox);
+    meshKnot = new THREE.Mesh(geometryKnot, materialKnot);
+
+    scene.add(meshBox);
+    scene.add(meshKnot);
 
     element = renderer.domElement;
 
     initEffects();
     initControls();
-
-    var light = new THREE.HemisphereLight(0x777777, 0xffffff, 1);
-    scene.add(light);
+    addLights();
 
     container = document.getElementById('test');
     container.appendChild(element);
@@ -41,107 +52,14 @@ function init() {
     setTimeout(resize, 1);
 }
 
-function initTexture() {
-
-    var texture = THREE.ImageUtils.loadTexture(
-        //'textures/Pearson_logo.png'
-        'textures/colorful-checks.jpg'
-    );
-
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat = new THREE.Vector2(1, 1);
-    texture.anisotropy = renderer.getMaxAnisotropy();
-
-    material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        specular: 0xffffff,
-        shininess: 20,
-        shading: THREE.FlatShading,
-        map: texture,
-        wireframe: false
-    });
-
-}
-
-function loadtexture() {
-    // instantiate a loader
-    var loader = new THREE.TextureLoader();
-
-    // load a resource
-    loader.load(
-        // resource URL
-        'textures/patterns/checker.png',
-        // Function when resource is loaded
-        function(texture) {
-            // do something with the texture
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat = new THREE.Vector2(50, 50);
-            texture.anisotropy = renderer.getMaxAnisotropy();
-
-            material = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
-                specular: 0xffffff,
-                shininess: 20,
-                shading: THREE.FlatShading,
-                map: texture,
-                wireframe: false
-            });
-        },
-        // Function called when download progresses
-        function(xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        // Function called when download errors
-        function(xhr) {
-            console.log('An error happened');
-        }
-    );
-}
-
-function initEffects() {
-    //effect = new THREE.StereoEffect(renderer);
-    //effect = new THREE.OculusRiftEffect(renderer, {worldScale: 100, scale: 0.5});
-    //effect = new THREE.AnaglyphEffect(renderer);
-    effect = new THREE.CardboardEffect(renderer);
-    effect.setSize(window.innerWidth, window.innerHeight);
-}
-
-function initControls() {
-    controls = new THREE.OrbitControls(camera, element);
-    controls.rotateUp = Math.PI / 4;
-    /*
-    controls.target.set(
-        camera.position.x,
-        camera.position.y,
-        camera.position.z
-    ); 
-    */
-    controls.enableZoom = true;
-    controls.enablePan = true;
-
-    function setOrientationControls(e) {
-        if (!e.alpha) {
-            return;
-        }
-
-        controls = new THREE.DeviceOrientationControls(camera, true);
-        controls.connect();
-        controls.update();
-
-        element.addEventListener('click', fullscreen, false);
-
-        window.removeEventListener('deviceorientation', setOrientationControls, true);
-    }
-    window.addEventListener('deviceorientation', setOrientationControls, true);
-}
-
 function animate() {
     requestAnimationFrame(animate);
 
-    mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.02;
+    meshBox.rotation.x += 0.01;
+    meshBox.rotation.y += 0.02;
+
+    meshKnot.rotation.x += 0.01;
+    meshKnot.rotation.y += 0.02;
 
     update(clock.getDelta());
     render(clock.getDelta());
@@ -160,9 +78,7 @@ function resize() {
 
 function update(dt) {
     resize();
-
     camera.updateProjectionMatrix();
-
     controls.update(dt);
 }
 
