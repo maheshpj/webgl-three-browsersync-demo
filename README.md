@@ -19,7 +19,7 @@ This will start browser-sync live reload and open a window in local mode
 
 You can open the page using external url from your mobile, and if you have google cardboard VR, you can check the example using VR.  
 
-![Alt text](/images/vr_img_1.jpg?raw=true "VR Image 1")
+![Alt text](/images/vr_img_1.jpg?raw=true "Google Cardboard VR Image 1")
 
-![Alt text](/images/vr_img_4.jpg?raw=true "VR Image 1")
+![Alt text](/images/vr_img_5.jpg?raw=true "Google Cardboard VR Image 2")
 
